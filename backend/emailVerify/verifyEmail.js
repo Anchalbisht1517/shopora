@@ -1,0 +1,33 @@
+import { config } from 'dotenv'
+import nodemailer from 'nodemailer'
+import 'dotenv/config'
+
+export const verifyEmail=({token, email})=>{
+    
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user:process.env.MAIL_USER,
+            pass:process.env.MAIL_PASS
+        }
+    });
+    const mailConfigurations = {
+        from: process.env.MAIL_USER, 
+        to: email, 
+        subject: "Email verification", 
+        text:`Hi! There, You have recently visited our website and entered your email
+        Please follow the given lnk to verify your email
+        http://localhost:5173/verify/${token} 
+        Thanks`
+    };
+transporter.sendMail(mailConfigurations, (error, info) => {
+        if (error) {
+            console.error("Error occurred:", error);
+            res.status(500).send('Error in sending email. Please try again later.');
+        } else {
+            console.log('Email sent:', info.response);
+            res.send('Email sent successfully!');
+        }
+    });
+
+}
